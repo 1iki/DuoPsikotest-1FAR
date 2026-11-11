@@ -6,15 +6,19 @@ import { signUp } from '@/lib/actions/auth';
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
     setError(null);
+    setSuccessMessage(null);
     try {
       const result = await signUp(formData);
       if (result?.error) {
         setError(result.error);
+      } else if (result?.message) {
+        setSuccessMessage(result.message);
       }
     } catch {
       // redirect throws, which is expected
@@ -38,78 +42,97 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <form action={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="fullName" className="mb-1 block text-sm font-medium">
-              Nama Lengkap
-            </label>
-            <input
-              id="fullName"
-              name="fullName"
-              type="text"
-              required
-              autoComplete="name"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
-              placeholder="Nama lengkap Anda"
-            />
+        {successMessage ? (
+          <div className="rounded-xl border border-green-200 bg-green-50 p-5 text-center dark:border-green-900/50 dark:bg-green-950/30">
+            <div className="mb-3 text-3xl">📧</div>
+            <h2 className="mb-2 text-lg font-bold text-green-800 dark:text-green-300">
+              Konfirmasi Email Dikirim
+            </h2>
+            <p className="mb-5 text-sm text-green-700 dark:text-green-400">
+              {successMessage}
+            </p>
+            <Link
+              href="/login"
+              className="inline-block w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+            >
+              Menuju Halaman Masuk
+            </Link>
           </div>
-
-          <div>
-            <label htmlFor="email" className="mb-1 block text-sm font-medium">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
-              placeholder="nama@email.com"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="mb-1 block text-sm font-medium">
-              Kata Sandi
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              autoComplete="new-password"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
-              placeholder="Minimal 8 karakter"
-            />
-          </div>
-
-          {error && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">
-              {error}
+        ) : (
+          <form action={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="fullName" className="mb-1 block text-sm font-medium">
+                Nama Lengkap
+              </label>
+              <input
+                id="fullName"
+                name="fullName"
+                type="text"
+                required
+                autoComplete="name"
+                className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
+                placeholder="Nama lengkap Anda"
+              />
             </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-          >
-            {loading ? 'Memproses...' : 'Daftar'}
-          </button>
-        </form>
+            <div>
+              <label htmlFor="email" className="mb-1 block text-sm font-medium">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
+                placeholder="nama@email.com"
+              />
+            </div>
 
-        <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-          Sudah punya akun?{' '}
-          <Link
-            href="/login"
-            className="font-medium text-blue-600 hover:underline dark:text-blue-400"
-          >
-            Masuk
-          </Link>
-        </p>
+            <div>
+              <label htmlFor="password" className="mb-1 block text-sm font-medium">
+                Kata Sandi
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                autoComplete="new-password"
+                className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
+                placeholder="Minimal 8 karakter"
+              />
+            </div>
+
+            {error && (
+              <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            >
+              {loading ? 'Memproses...' : 'Daftar'}
+            </button>
+          </form>
+        )}
+
+        {!successMessage && (
+          <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+            Sudah punya akun?{' '}
+            <Link
+              href="/login"
+              className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+            >
+              Masuk
+            </Link>
+          </p>
+        )}
       </div>
     </main>
   );
 }
-

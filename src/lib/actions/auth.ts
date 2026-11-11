@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 
 export interface AuthResult {
   error?: string;
+  message?: string;
 }
 
 export async function signUp(formData: FormData): Promise<AuthResult> {
@@ -27,17 +28,30 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
     return { error: 'Terlalu banyak percobaan pendaftaran. Coba lagi dalam 1 menit.' };
   }
 
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://duopsikotest-1far.vercel.app');
+
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
       data: { full_name: parsed.data.fullName },
+      emailRedirectTo: `${siteUrl}/auth/callback`,
     },
   });
 
   if (error) {
     return { error: error.message };
+  }
+
+  // If email confirmation is required, notify user to check their email
+  if (data?.user && (!data.session || data.user.identities?.length === 0)) {
+    return {
+      message:
+        'Pendaftaran berhasil! Tautan konfirmasi telah dikirim ke email Anda. Silakan periksa kotak masuk (atau folder spam) untuk mengaktifkan akun Anda sebelum masuk.',
+    };
   }
 
   redirect('/tests');
@@ -70,6 +84,15 @@ export async function signIn(
   });
 
   if (error) {
+    if (error.message.toLowerCase().includes('email not confirmed')) {
+      return {
+        error:
+          'Email Anda belum dikonfirmasi. Silakan buka email konfirmasi yang dikirimkan oleh sistem dan klik tautan untuk mengaktifkan akun.',
+      };
+    }
+    if (error.message.toLowerCase().includes('invalid login credentials')) {
+      return { error: 'Email atau kata sandi salah. Silakan coba lagi.' };
+    }
     return { error: error.message };
   }
 
