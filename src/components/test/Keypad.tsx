@@ -10,9 +10,16 @@ interface KeypadProps {
 export default function Keypad({ onPress, disabled = false }: KeypadProps) {
   const handlePress = useCallback(
     (digit: number) => {
-      if (!disabled) {
-        onPress(digit);
+      if (disabled) return;
+      // Provide light haptic vibration feedback on supported mobile devices
+      if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+        try {
+          navigator.vibrate(12);
+        } catch {
+          // Ignore if blocked or unsupported
+        }
       }
+      onPress(digit);
     },
     [onPress, disabled],
   );
@@ -29,18 +36,18 @@ export default function Keypad({ onPress, disabled = false }: KeypadProps) {
       }
       const num = parseInt(e.key, 10);
       if (!isNaN(num) && num >= 0 && num <= 9) {
-        onPress(num);
+        handlePress(num);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [disabled, onPress]);
+  }, [disabled, handlePress]);
 
   return (
     <div
       className="grid grid-cols-5 gap-1.5 sm:gap-2.5 w-full select-none"
       role="group"
-      aria-label="Keypad angka"
+      aria-label="Keypad angka tes"
     >
       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((digit) => (
         <button
@@ -48,7 +55,7 @@ export default function Keypad({ onPress, disabled = false }: KeypadProps) {
           type="button"
           onClick={() => handlePress(digit)}
           disabled={disabled}
-          className="flex h-14 sm:h-16 w-full select-none touch-manipulation items-center justify-center rounded-xl bg-gray-100/90 text-2xl font-bold tabular-nums text-gray-900 border border-gray-200/80 shadow-sm transition-all active:scale-95 active:bg-blue-600 active:text-white active:border-blue-600 disabled:opacity-30 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:active:bg-blue-600 dark:active:border-blue-500"
+          className="flex h-14 sm:h-16 w-full select-none touch-manipulation items-center justify-center rounded-2xl bg-gray-100/90 text-2xl font-bold tabular-nums text-gray-900 border border-gray-200/90 shadow-xs transition-all duration-75 active:scale-95 active:bg-indigo-600 active:text-white active:border-indigo-600 active:shadow-inner disabled:pointer-events-none disabled:opacity-30 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:active:bg-indigo-600 dark:active:border-indigo-500"
           aria-label={`Angka ${digit}`}
         >
           {digit}

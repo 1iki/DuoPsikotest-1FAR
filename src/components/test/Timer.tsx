@@ -57,8 +57,8 @@ export default function Timer({
   return (
     <div className="flex items-center gap-2" aria-live="polite">
       <svg
-        width="48"
-        height="48"
+        width="46"
+        height="46"
         viewBox="0 0 48 48"
         className="rotate-[-90deg]"
       >
@@ -69,8 +69,8 @@ export default function Timer({
           r={radius}
           fill="none"
           stroke="currentColor"
-          strokeWidth="3"
-          className="text-gray-200 dark:text-gray-700"
+          strokeWidth="3.5"
+          className="text-gray-200 dark:text-gray-800"
         />
         {/* Progress circle */}
         <circle
@@ -79,21 +79,25 @@ export default function Timer({
           r={radius}
           fill="none"
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="3.5"
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           className={`transition-colors ${
-            isUrgent ? 'text-red-500' : 'text-blue-500'
+            isUrgent
+              ? 'text-red-500 animate-pulse'
+              : 'text-indigo-600 dark:text-indigo-400'
           }`}
         />
       </svg>
       <span
-        className={`min-w-[2ch] text-right font-mono text-lg font-bold tabular-nums ${
-          isUrgent ? 'text-red-500' : ''
+        className={`min-w-[2ch] text-right font-mono text-base font-extrabold tabular-nums ${
+          isUrgent
+            ? 'text-red-500 animate-pulse'
+            : 'text-gray-900 dark:text-gray-100'
         }`}
       >
-        {seconds}
+        {seconds}s
       </span>
     </div>
   );

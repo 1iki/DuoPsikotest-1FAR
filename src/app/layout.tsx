@@ -1,5 +1,6 @@
 import '@/app/globals.css';
 import type { Metadata, Viewport } from 'next';
+import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'Psikotes Online — Tes Kraepelin & Pauli',
@@ -21,8 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className="min-h-screen bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
+      <body className="min-h-screen bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100 selection:bg-indigo-500 selection:text-white">
         {children}
+        <Toaster />
       </body>
     </html>
   );

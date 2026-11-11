@@ -12,9 +12,11 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Profil & Hasil Tes</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100">
+          Profil & Hasil Tes
+        </h1>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Riwayat pengerjaan tes, metrik performa, dan perkembangan hasil psikotes Anda.
         </p>

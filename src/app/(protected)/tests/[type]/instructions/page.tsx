@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { TEST_CONFIGS, getEstimatedDuration } from '@/config/tests';
-import { BookOpen, Clock, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { BookOpen, Clock, AlertTriangle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface Props {
   params: Promise<{ type: string }>;
@@ -13,93 +17,161 @@ export default async function InstructionsPage({ params }: Props) {
   if (!config) notFound();
 
   const duration = getEstimatedDuration(config);
+  const isKraepelin = type === 'kraepelin';
 
   return (
-    <div className="mx-auto max-w-md">
-      <h1 className="mb-2 text-2xl font-bold tracking-tight">{config.label}</h1>
-      <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
-        Baca instruksi berikut dengan cermat sebelum memulai tes.
-      </p>
-
-      <div className="mb-6 space-y-4">
-        {/* Instruction cards */}
-        <div className="rounded-xl border border-gray-200 bg-white p-4.5 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-          <div className="mb-3 flex items-center gap-2 text-blue-600 dark:text-blue-400">
-            <BookOpen className="h-5 w-5" />
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100">Cara Mengerjakan</h3>
-          </div>
-          <ol className="list-inside list-decimal space-y-2 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-            <li>
-              Anda akan melihat deretan angka vertikal (lajur). Setiap lajur
-              berisi {config.numbersPerColumn} angka.
-            </li>
-            <li>
-              Jumlahkan dua angka yang berdampingan (atas + bawah), lalu masukkan{' '}
-              <strong>hanya angka satuan</strong> hasilnya.
-            </li>
-            <li>
-              Contoh: 7 + 8 = 15, jawaban yang dimasukkan adalah <strong>5</strong>.
-            </li>
-            <li>
-              Setelah menjawab, kursor otomatis pindah ke pasangan berikutnya.
-              Jawaban <strong>tidak bisa diedit</strong>.
-            </li>
-            <li>
-              Setiap lajur punya waktu {config.secondsPerColumn} detik. Setelah
-              waktu habis, otomatis pindah ke lajur berikutnya.
-            </li>
-          </ol>
+    <div className="mx-auto max-w-xl space-y-6">
+      {/* Header */}
+      <div>
+        <div className="flex items-center gap-2 mb-1.5">
+          <Badge variant="secondary" className="text-xs">
+            {isKraepelin ? 'Tes Kraepelin' : 'Tes Pauli'}
+          </Badge>
+          <Badge variant="outline" className="text-xs font-mono">
+            {duration}
+          </Badge>
         </div>
-
-        <div className="rounded-xl border border-gray-200 bg-white p-4.5 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-          <div className="mb-3 flex items-center gap-2 text-blue-600 dark:text-blue-400">
-            <Clock className="h-5 w-5" />
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100">Detail Tes</h3>
-          </div>
-          <div className="space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
-            <p className="flex justify-between border-b border-gray-100 pb-1.5 dark:border-gray-800">
-              <span className="text-gray-500">Jumlah lajur:</span>
-              <strong className="font-mono">{config.totalColumns} lajur</strong>
-            </p>
-            <p className="flex justify-between border-b border-gray-100 pb-1.5 dark:border-gray-800">
-              <span className="text-gray-500">Waktu per lajur:</span>
-              <strong className="font-mono">{config.secondsPerColumn} detik</strong>
-            </p>
-            <p className="flex justify-between pt-0.5">
-              <span className="text-gray-500">Estimasi total:</span>
-              <strong>{duration}</strong>
-            </p>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4.5 dark:border-yellow-900/50 dark:bg-yellow-950/20">
-          <div className="mb-2 flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
-            <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-            <h3 className="font-semibold">Penting</h3>
-          </div>
-          <ul className="list-inside list-disc space-y-1 text-sm text-yellow-700 dark:text-yellow-400">
-            <li>Tes <strong>tidak bisa di-pause</strong> setelah dimulai.</li>
-            <li>Pastikan HP dalam posisi <strong>portrait</strong>.</li>
-            <li>Pastikan baterai dan koneksi internet cukup.</li>
-            <li>Jawab secepat dan seteliti mungkin.</li>
-          </ul>
-        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100">
+          Petunjuk Pengerjaan
+        </h1>
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          Pelajari aturan dan mekanisme berikut sebelum memulai sesi latihan.
+        </p>
       </div>
 
-      <div className="space-y-3">
-        <Link
-          href={`/tests/${type}/practice`}
-          className="block w-full rounded-lg bg-blue-600 px-4 py-3 text-center font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
-        >
-          Mulai Latihan ({config.practiceColumns} Lajur)
-        </Link>
-        <Link
-          href="/tests"
-          className="flex items-center justify-center gap-1.5 w-full rounded-lg border border-gray-300 px-4 py-3 text-center text-sm font-medium transition-colors hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-300"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Kembali</span>
-        </Link>
+      {/* Instructions Card */}
+      <Card>
+        <CardHeader className="pb-3 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+            <BookOpen className="h-5 w-5" />
+            <CardTitle className="text-base font-bold text-gray-900 dark:text-gray-100">
+              Aturan & Mekanisme
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-4 space-y-3.5 text-sm text-gray-700 dark:text-gray-300">
+          <div className="flex items-start gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+              1
+            </span>
+            <p className="leading-relaxed">
+              Anda akan melihat kolom vertikal (lajur) berisi deretan angka acak 0–9. Setiap lajur memuat{' '}
+              <strong className="text-gray-900 dark:text-gray-100">{config.numbersPerColumn} angka</strong>.
+            </p>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+              2
+            </span>
+            <p className="leading-relaxed">
+              Jumlahkan dua angka yang berdampingan, lalu ketik{' '}
+              <strong className="text-gray-900 dark:text-gray-100 underline decoration-indigo-400 decoration-2">
+                HANYA angka satuan
+              </strong>{' '}
+              dari hasil penjumlahan tersebut.
+            </p>
+          </div>
+
+          {/* Example Box */}
+          <div className="ml-9 rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 text-xs dark:border-indigo-900/50 dark:bg-indigo-950/30">
+            <p className="font-semibold text-indigo-950 dark:text-indigo-200 mb-1">
+              Contoh Penjumlahan:
+            </p>
+            <div className="grid grid-cols-2 gap-2 text-indigo-900 dark:text-indigo-300 font-mono">
+              <div className="rounded-lg bg-white/80 p-2 dark:bg-gray-900/80">
+                <span>7 + 8 = 15</span> → ketik <strong>5</strong>
+              </div>
+              <div className="rounded-lg bg-white/80 p-2 dark:bg-gray-900/80">
+                <span>4 + 3 = 7</span> → ketik <strong>7</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+              3
+            </span>
+            <p className="leading-relaxed">
+              Gunakan keypad di layar. Setelah memasukkan 1 digit, sistem otomatis maju ke pasangan berikutnya.{' '}
+              <span className="text-amber-700 font-medium dark:text-amber-400">
+                Jawaban tidak dapat diedit atau dibatalkan.
+              </span>
+            </p>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+              4
+            </span>
+            <p className="leading-relaxed">
+              Setiap lajur memiliki durasi tetap{' '}
+              <strong className="text-gray-900 dark:text-gray-100">{config.secondsPerColumn} detik</strong>.
+              Ketika waktu lajur habis, layar akan berpindah otomatis ke lajur berikutnya.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Test details */}
+      <Card>
+        <CardHeader className="pb-3 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+            <Clock className="h-5 w-5" />
+            <CardTitle className="text-base font-bold text-gray-900 dark:text-gray-100">
+              Spesifikasi Pengerjaan
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-4 divide-y divide-gray-100 dark:divide-gray-800 text-sm">
+          <div className="flex justify-between py-2">
+            <span className="text-gray-500">Jumlah Total Lajur:</span>
+            <span className="font-mono font-bold text-gray-900 dark:text-gray-100">
+              {config.totalColumns} lajur
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span className="text-gray-500">Durasi per Lajur:</span>
+            <span className="font-mono font-bold text-gray-900 dark:text-gray-100">
+              {config.secondsPerColumn} detik
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span className="text-gray-500">Estimasi Total Durasi:</span>
+            <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+              {duration}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Warning */}
+      <Alert variant="warning" className="border-amber-200/80 bg-amber-50/70 dark:border-amber-900/50 dark:bg-amber-950/20">
+        <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+        <div className="space-y-1">
+          <AlertTitle className="text-xs font-bold text-amber-900 dark:text-amber-200">
+            Peringatan Penting
+          </AlertTitle>
+          <AlertDescription className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+            Tes ini tidak dapat dijeda. Pastikan ponsel Anda dalam orientasi portrait, daya baterai mencukupi, dan notifikasi dinonaktifkan sementara.
+          </AlertDescription>
+        </div>
+      </Alert>
+
+      {/* Action Buttons */}
+      <div className="space-y-3 pt-2">
+        <Button asChild size="lg" className="w-full font-semibold shadow-md shadow-indigo-600/20">
+          <Link href={`/tests/${type}/practice`} className="flex items-center justify-center gap-2">
+            <span>Mulai Sesi Latihan ({config.practiceColumns} Lajur)</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+        <Button asChild variant="outline" size="lg" className="w-full">
+          <Link href="/tests" className="flex items-center justify-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            <span>Kembali ke Pilihan Tes</span>
+          </Link>
+        </Button>
       </div>
     </div>
   );

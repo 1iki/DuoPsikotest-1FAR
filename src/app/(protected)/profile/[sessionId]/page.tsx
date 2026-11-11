@@ -4,7 +4,12 @@ import { getSessionResult } from '@/lib/actions/session';
 import type { AnalysisMetrics, AnalysisCategories } from '@/types';
 import WorkCurveChart from '@/components/profile/WorkCurveChart';
 import MetricCard from '@/components/profile/MetricCard';
+import NarrativeSummary from '@/components/profile/NarrativeSummary';
 import { ArrowLeft, ClipboardList, AlertTriangle } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,58 +31,71 @@ export default async function ProfileSessionDetailPage({ params }: Props) {
   const config = session.config_snapshot as { label: string };
 
   return (
-    <div className="mx-auto max-w-md">
-      <div className="mb-4">
+    <div className="mx-auto max-w-xl space-y-6">
+      {/* Back link */}
+      <div>
         <Link
           href="/profile"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
         >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Kembali ke Profil</span>
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>Kembali ke Ringkasan Profil</span>
         </Link>
       </div>
 
-      <div className="mb-6 text-center">
-        <div className="mx-auto mb-2.5 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400">
-          <ClipboardList className="h-6 w-6" />
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 shadow-sm">
+          <ClipboardList className="h-7 w-7" />
         </div>
-        <h1 className="text-2xl font-bold tracking-tight">Detail Percobaan</h1>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-          {config?.label || session.test_type} —{' '}
-          {new Date(session.started_at).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </p>
+        <div>
+          <Badge variant="secondary" className="mb-1 text-xs">
+            Rincian Percobaan
+          </Badge>
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100">
+            {config?.label || session.test_type}
+          </h1>
+          <p className="mt-1 text-xs text-gray-500">
+            Waktu pengerjaan:{' '}
+            {new Date(session.started_at).toLocaleDateString('id-ID', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </p>
+        </div>
       </div>
 
       {/* Metrics Grid */}
-      <div className="mb-6 grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         <MetricCard
           label="Kecepatan (Panker)"
+          sublabel="Rata-rata kecepatan berhitung"
           value={metrics.speed.toString()}
-          unit="jawaban/lajur"
+          unit="jwb/lajur"
           category={categories.speed}
         />
         <MetricCard
           label="Ketelitian (Tianker)"
-          value={metrics.accuracy.errorPercentage.toString()}
-          unit="% kesalahan"
+          sublabel="Tingkat kesalahan penjumlahan"
+          value={`${metrics.accuracy.errorPercentage}%`}
+          unit={`(${metrics.accuracy.totalErrors} salah)`}
           category={categories.accuracy}
           invertColor
         />
         <MetricCard
           label="Keajegan (Janker)"
+          sublabel="Stabilitas ritme kerja"
           value={metrics.consistency.range.toString()}
-          unit={`range (SD: ${metrics.consistency.standardDeviation})`}
+          unit={`SD: ${metrics.consistency.standardDeviation}`}
           category={categories.consistency}
           invertColor
         />
         <MetricCard
           label="Ketahanan (Hanker)"
+          sublabel="Kemiringan kurva kerja"
           value={
             metrics.endurance.slope >= 0
               ? `+${metrics.endurance.slope}`
@@ -89,61 +107,40 @@ export default async function ProfileSessionDetailPage({ params }: Props) {
       </div>
 
       {/* Work Curve */}
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-        <h3 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">Kurva Kerja</h3>
-        <WorkCurveChart data={metrics.workCurve} />
-      </div>
+      <Card>
+        <CardHeader className="pb-2 border-b border-gray-100 dark:border-gray-800 flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle className="text-base font-bold">Kurva Kerja (Work Curve)</CardTitle>
+            <p className="text-xs text-gray-500">Fluktuasi pengerjaan sepanjang lajur</p>
+          </div>
+          <Badge variant="outline" className="font-mono text-xs">
+            {metrics.workCurve.length} Lajur
+          </Badge>
+        </CardHeader>
+        <CardContent className="pt-4">
+          <WorkCurveChart data={metrics.workCurve} />
+        </CardContent>
+      </Card>
 
       {/* Narrative Summary */}
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-        <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Ringkasan Analisis</h3>
-        <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-          {analysis.summary}
-        </p>
-      </div>
+      {analysis.summary && <NarrativeSummary summary={analysis.summary} />}
 
-      {/* Column Details Table */}
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-        <h3 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">Rincian Per Lajur</h3>
-        <div className="max-h-60 overflow-y-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="sticky top-0 bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
-              <tr>
-                <th className="py-1.5 px-2">Lajur</th>
-                <th className="py-1.5 px-2">Dijawab</th>
-                <th className="py-1.5 px-2">Benar</th>
-                <th className="py-1.5 px-2">Salah</th>
-                <th className="py-1.5 px-2">Terlewat</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-800 font-mono">
-              {result.columnResults.map((col) => (
-                <tr key={col.column_index}>
-                  <td className="py-1 px-2 font-semibold">{col.column_index + 1}</td>
-                  <td className="py-1 px-2">{col.rows_answered}</td>
-                  <td className="py-1 px-2 text-green-600">{col.correct}</td>
-                  <td className="py-1 px-2 text-red-600">{col.wrong}</td>
-                  <td className="py-1 px-2 text-yellow-600">{col.skipped}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Psychological Disclaimer */}
+      <Alert variant="warning" className="border-amber-200/80 bg-amber-50/70 dark:border-amber-900/50 dark:bg-amber-950/20">
+        <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+        <AlertDescription className="text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
+          <strong>Disclaimer:</strong> Hasil tes ini bersifat latihan dan gambaran awal, bukan diagnosis atau asesmen psikologis resmi perusahaan/organisasi.
+        </AlertDescription>
+      </Alert>
 
-      {/* Disclaimer */}
-      <div className="mb-6 flex items-start gap-2.5 rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-xs text-yellow-800 dark:border-yellow-900/50 dark:bg-yellow-950/20 dark:text-yellow-300">
-        <AlertTriangle className="h-4 w-4 shrink-0 text-yellow-600 dark:text-yellow-400 mt-0.5" />
-        <span>Hasil ini bersifat latihan dan gambaran awal, bukan diagnosis atau asesmen psikologis resmi.</span>
-      </div>
-
-      <div className="flex gap-3">
-        <Link
-          href="/profile"
-          className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700 shadow-sm"
-        >
-          Kembali ke Profil
-        </Link>
+      {/* Back CTA */}
+      <div className="pt-2">
+        <Button asChild variant="outline" size="lg" className="w-full">
+          <Link href="/profile" className="flex items-center justify-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            <span>Kembali ke Halaman Profil</span>
+          </Link>
+        </Button>
       </div>
     </div>
   );
