@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Brain, Zap, Flame, BarChart3, Info } from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -6,8 +7,8 @@ export default function LandingPage() {
       <div className="mx-auto w-full max-w-md text-center">
         {/* Hero */}
         <div className="mb-8">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-2xl font-bold text-white">
-            Ψ
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md">
+            <Brain className="h-9 w-9" />
           </div>
           <h1 className="mb-3 text-3xl font-bold tracking-tight">
             Psikotes Online
@@ -20,28 +21,34 @@ export default function LandingPage() {
 
         {/* Features */}
         <div className="mb-8 space-y-3 text-left">
-          <div className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
-            <span className="mt-0.5 text-xl">⚡</span>
+          <div className="flex items-start gap-3.5 rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="mt-0.5 rounded-lg bg-amber-50 p-2 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
+              <Zap className="h-5 w-5" />
+            </div>
             <div>
-              <h3 className="font-semibold">Tes Kraepelin</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100">Tes Kraepelin</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 40 lajur × 30 detik. Fokus pada kecepatan dan ketelitian berhitung.
               </p>
             </div>
           </div>
-          <div className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
-            <span className="mt-0.5 text-xl">🏋️</span>
+          <div className="flex items-start gap-3.5 rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="mt-0.5 rounded-lg bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
+              <Flame className="h-5 w-5" />
+            </div>
             <div>
-              <h3 className="font-semibold">Tes Pauli</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100">Tes Pauli</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 40 lajur × 60 detik. Mengukur ketahanan dan konsistensi kerja jangka panjang.
               </p>
             </div>
           </div>
-          <div className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-800">
-            <span className="mt-0.5 text-xl">📊</span>
+          <div className="flex items-start gap-3.5 rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="mt-0.5 rounded-lg bg-emerald-50 p-2 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
+              <BarChart3 className="h-5 w-5" />
+            </div>
             <div>
-              <h3 className="font-semibold">Analisis Otomatis</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100">Analisis Otomatis</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Hasil langsung dengan grafik kurva kerja, metrik performa, dan ringkasan naratif.
               </p>
@@ -66,9 +73,10 @@ export default function LandingPage() {
         </div>
 
         {/* Disclaimer */}
-        <p className="mt-6 text-xs text-gray-500 dark:text-gray-500">
-          Hasil tes bersifat latihan dan gambaran awal, bukan diagnosis atau asesmen psikologis resmi.
-        </p>
+        <div className="mt-6 flex items-center justify-center gap-1.5 text-xs text-gray-500 dark:text-gray-500">
+          <Info className="h-3.5 w-3.5 shrink-0" />
+          <span>Hasil tes bersifat latihan dan gambaran awal, bukan diagnosis atau asesmen resmi.</span>
+        </div>
       </div>
     </main>
   );

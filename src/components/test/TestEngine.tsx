@@ -8,6 +8,7 @@ import { COLUMN_TRANSITION_MS } from '@/config/tests';
 import NumberColumn from './NumberColumn';
 import Keypad from './Keypad';
 import Timer from './Timer';
+import { Trophy, Smartphone } from 'lucide-react';
 
 interface TestEngineProps {
   sessionId: string;
@@ -170,9 +171,9 @@ export default function TestEngine({
   if (isFinished && !isPractice) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-white p-6 dark:bg-gray-950">
-        <div className="text-center">
-          <div className="mb-4 text-5xl">🎉</div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Tes Selesai!</h2>
+        <div className="text-center max-w-sm">
+          <Trophy className="mx-auto mb-4 h-16 w-16 text-amber-500 animate-pulse" />
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Tes Selesai!</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Menghitung analisis & mengalihkan ke halaman hasil...
           </p>
@@ -185,7 +186,7 @@ export default function TestEngine({
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-white p-6 text-center dark:bg-gray-950">
         <div className="max-w-xs">
-          <div className="mb-4 text-5xl animate-bounce">📱</div>
+          <Smartphone className="mx-auto mb-4 h-16 w-16 text-blue-500 animate-bounce" />
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Putar Perangkat Anda</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Tes ini dirancang khusus dalam posisi portrait (tegak). Silakan putar HP Anda ke posisi vertikal untuk melanjutkan.

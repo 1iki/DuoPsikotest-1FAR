@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { signIn } from '@/lib/actions/auth';
+import { Brain, Loader2 } from 'lucide-react';
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -29,12 +30,12 @@ function LoginForm() {
   return (
     <div className="w-full max-w-sm">
       <div className="mb-6 text-center">
-        <Link href="/" className="inline-block">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-lg font-bold text-white">
-            Ψ
+        <Link href="/" className="inline-block transition-transform hover:scale-105">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
+            <Brain className="h-7 w-7" />
           </div>
         </Link>
-        <h1 className="text-2xl font-bold">Masuk</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Masuk</h1>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Masuk ke akun Anda untuk mengerjakan tes
         </p>
@@ -80,9 +81,16 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          {loading ? 'Memproses...' : 'Masuk'}
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Memproses...</span>
+            </>
+          ) : (
+            'Masuk'
+          )}
         </button>
       </form>
 
@@ -105,7 +113,7 @@ export default function LoginPage() {
       <Suspense
         fallback={
           <div className="w-full max-w-sm text-center">
-            <div className="mb-3 h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent mx-auto" />
+            <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-blue-600" />
             <p className="text-sm text-gray-500">Memuat...</p>
           </div>
         }

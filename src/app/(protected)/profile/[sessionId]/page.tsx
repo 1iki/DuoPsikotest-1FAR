@@ -4,6 +4,7 @@ import { getSessionResult } from '@/lib/actions/session';
 import type { AnalysisMetrics, AnalysisCategories } from '@/types';
 import WorkCurveChart from '@/components/profile/WorkCurveChart';
 import MetricCard from '@/components/profile/MetricCard';
+import { ArrowLeft, ClipboardList, AlertTriangle } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,15 +30,18 @@ export default async function ProfileSessionDetailPage({ params }: Props) {
       <div className="mb-4">
         <Link
           href="/profile"
-          className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline dark:text-blue-400"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
         >
-          ← Kembali ke Profil
+          <ArrowLeft className="h-4 w-4" />
+          <span>Kembali ke Profil</span>
         </Link>
       </div>
 
       <div className="mb-6 text-center">
-        <div className="mb-2 text-3xl">📋</div>
-        <h1 className="text-2xl font-bold">Detail Percobaan</h1>
+        <div className="mx-auto mb-2.5 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400">
+          <ClipboardList className="h-6 w-6" />
+        </div>
+        <h1 className="text-2xl font-bold tracking-tight">Detail Percobaan</h1>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           {config?.label || session.test_type} —{' '}
           {new Date(session.started_at).toLocaleDateString('id-ID', {
@@ -85,22 +89,22 @@ export default async function ProfileSessionDetailPage({ params }: Props) {
       </div>
 
       {/* Work Curve */}
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-        <h3 className="mb-3 font-semibold">Kurva Kerja</h3>
+      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+        <h3 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">Kurva Kerja</h3>
         <WorkCurveChart data={metrics.workCurve} />
       </div>
 
       {/* Narrative Summary */}
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-        <h3 className="mb-2 font-semibold">Ringkasan Analisis</h3>
+      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+        <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Ringkasan Analisis</h3>
         <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
           {analysis.summary}
         </p>
       </div>
 
       {/* Column Details Table */}
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-        <h3 className="mb-3 font-semibold">Rincian Per Lajur</h3>
+      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+        <h3 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">Rincian Per Lajur</h3>
         <div className="max-h-60 overflow-y-auto">
           <table className="w-full text-left text-xs">
             <thead className="sticky top-0 bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
@@ -128,15 +132,15 @@ export default async function ProfileSessionDetailPage({ params }: Props) {
       </div>
 
       {/* Disclaimer */}
-      <div className="mb-6 rounded-lg bg-yellow-50 p-3 text-xs text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300">
-        ⚠️ Hasil ini bersifat latihan dan gambaran awal, bukan diagnosis atau
-        asesmen psikologis resmi.
+      <div className="mb-6 flex items-start gap-2.5 rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-xs text-yellow-800 dark:border-yellow-900/50 dark:bg-yellow-950/20 dark:text-yellow-300">
+        <AlertTriangle className="h-4 w-4 shrink-0 text-yellow-600 dark:text-yellow-400 mt-0.5" />
+        <span>Hasil ini bersifat latihan dan gambaran awal, bukan diagnosis atau asesmen psikologis resmi.</span>
       </div>
 
       <div className="flex gap-3">
         <Link
           href="/profile"
-          className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+          className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700 shadow-sm"
         >
           Kembali ke Profil
         </Link>

@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { getSessionForResume } from '@/lib/actions/session';
 import type { SessionResumeInfo } from '@/types';
 import TestEngine from '@/components/test/TestEngine';
+import { AlertTriangle, Loader2 } from 'lucide-react';
 
 export default function TestRunPage() {
   const params = useParams<{ type: string; sessionId: string }>();
@@ -29,7 +30,7 @@ export default function TestRunPage() {
     return (
       <div className="flex h-[60vh] items-center justify-center">
         <div className="text-center">
-          <div className="mb-3 h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent mx-auto" />
+          <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-blue-600" />
           <p className="text-sm text-gray-500">Memuat sesi tes...</p>
         </div>
       </div>
@@ -39,9 +40,11 @@ export default function TestRunPage() {
   if (error) {
     return (
       <div className="flex h-[60vh] items-center justify-center p-4">
-        <div className="text-center">
-          <div className="mb-3 text-3xl">⚠️</div>
-          <h2 className="mb-2 font-bold">Gagal Memuat Sesi</h2>
+        <div className="text-center max-w-sm rounded-xl border border-red-200 bg-red-50 p-6 dark:border-red-900/50 dark:bg-red-950/20">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400">
+            <AlertTriangle className="h-6 w-6" />
+          </div>
+          <h2 className="mb-2 font-bold text-gray-900 dark:text-gray-100">Gagal Memuat Sesi</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">{error}</p>
         </div>
       </div>
@@ -65,4 +68,3 @@ export default function TestRunPage() {
     />
   );
 }
-
