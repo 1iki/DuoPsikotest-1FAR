@@ -4,3 +4,4 @@ export { correctAnswer, generateAnswerKey, checkAnswers } from './checker';
 export type { CheckResult } from './checker';
 export { calculateMetrics, mean, stdDev, linearRegressionSlope } from './metrics';
 export { categoriseAll } from './categorize';
+

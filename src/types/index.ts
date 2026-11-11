@@ -148,3 +148,4 @@ export interface SessionResultData {
   columnResults: ColumnResult[];
   analysis: TestAnalysis;
 }
+

@@ -98,3 +98,4 @@ export function categorise(
 export function getNorms(testType: TestType) {
   return NORMS[testType];
 }
+

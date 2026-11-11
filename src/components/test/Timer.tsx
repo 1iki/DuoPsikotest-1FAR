@@ -7,8 +7,6 @@ interface TimerProps {
   duration: number;
   /** Called when timer reaches zero */
   onTimeUp: () => void;
-  /** Reset trigger — increment to restart */
-  resetKey: number;
   /** Whether timer is running */
   running: boolean;
 }
@@ -16,23 +14,20 @@ interface TimerProps {
 export default function Timer({
   duration,
   onTimeUp,
-  resetKey,
   running,
 }: TimerProps) {
   const [remaining, setRemaining] = useState(duration);
-  const startRef = useRef<number>(0);
   const frameRef = useRef<number>(0);
   const calledRef = useRef(false);
 
   useEffect(() => {
-    setRemaining(duration);
     calledRef.current = false;
     if (!running) return;
 
-    startRef.current = performance.now();
+    const startTime = performance.now();
 
     const tick = (now: number) => {
-      const elapsed = (now - startRef.current) / 1000;
+      const elapsed = (now - startTime) / 1000;
       const left = Math.max(0, duration - elapsed);
       setRemaining(left);
 
@@ -48,7 +43,7 @@ export default function Timer({
     frameRef.current = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(frameRef.current);
-  }, [duration, resetKey, running, onTimeUp]);
+  }, [duration, running, onTimeUp]);
 
   // Circle progress
   const radius = 20;
@@ -89,9 +84,7 @@ export default function Timer({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           className={`transition-colors ${
-            isUrgent
-              ? 'text-red-500'
-              : 'text-blue-500'
+            isUrgent ? 'text-red-500' : 'text-blue-500'
           }`}
         />
       </svg>

@@ -151,3 +151,4 @@ create policy "Users can insert own analyses"
   );
 
 create index idx_test_analyses_session_id on public.test_analyses (session_id);
+

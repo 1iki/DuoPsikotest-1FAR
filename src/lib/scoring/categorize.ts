@@ -22,3 +22,4 @@ export function categoriseAll(
     endurance: categorise(testType, 'endurance', metrics.endurance.slope),
   };
 }
+

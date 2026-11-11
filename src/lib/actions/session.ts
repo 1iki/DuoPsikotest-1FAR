@@ -8,6 +8,7 @@ import { checkAnswers, generateAnswerKey } from '@/lib/scoring';
 import { calculateMetrics } from '@/lib/scoring';
 import { categoriseAll } from '@/lib/scoring';
 import { buildNarrativeSummary } from '@/config/interpretations';
+import { checkRateLimit } from '@/lib/security/ratelimit';
 import type {
   TestType,
   ColumnStats,
@@ -23,7 +24,7 @@ export async function createSession(
 ): Promise<{ data?: CreateSessionResponse; error?: string }> {
   const parsed = createSessionSchema.safeParse({ testType });
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message };
+    return { error: parsed.error.issues[0]?.message || 'Input tidak valid' };
   }
 
   const config = getTestConfig(parsed.data.testType);
@@ -38,6 +39,12 @@ export async function createSession(
 
   if (!user) {
     return { error: 'Anda harus login terlebih dahulu' };
+  }
+
+  // Rate limit session creation: maximum 10 sessions per minute per user
+  const rl = checkRateLimit(`create_session:${user.id}`, 10, 60 * 1000);
+  if (!rl.success) {
+    return { error: 'Terlalu banyak permintaan pembuatan sesi. Silakan coba sebentar lagi.' };
   }
 
   const seed = createSessionSeed();
@@ -151,7 +158,7 @@ export async function submitColumn(input: {
 }): Promise<{ error?: string }> {
   const parsed = submitColumnSchema.safeParse(input);
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message };
+    return { error: parsed.error.issues[0]?.message || 'Input tidak valid' };
   }
 
   const supabase = await createClient();
@@ -163,7 +170,11 @@ export async function submitColumn(input: {
     return { error: 'Anda harus login terlebih dahulu' };
   }
 
-  // Fetch session to get seed
+  // Rate limit answer submissions: maximum 60 submissions per minute per user
+  const rl = checkRateLimit(`submit:${user.id}`, 60, 60 * 1000);
+  if (!rl.success) {
+    return { error: 'Terlalu banyak permintaan pengiriman jawaban. Silakan tunggu sebentar.' };
+  }
   const { data: session, error: sessionError } = await supabase
     .from('test_sessions')
     .select('seed, config_snapshot, user_id, status')
@@ -229,6 +240,12 @@ export async function completeSession(
 
   if (!user) {
     return { error: 'Anda harus login terlebih dahulu' };
+  }
+
+  // Rate limit complete session: maximum 10 per minute per user
+  const rl = checkRateLimit(`complete:${user.id}`, 10, 60 * 1000);
+  if (!rl.success) {
+    return { error: 'Terlalu banyak permintaan penyelesaian sesi. Silakan coba sebentar lagi.' };
   }
 
   // Get session
@@ -411,3 +428,4 @@ export async function getLatestSessionStatus(testType: string) {
 
   return session;
 }
+

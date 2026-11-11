@@ -23,3 +23,4 @@ values (
 
 -- The seed data is intentionally commented out.
 -- To use: create a user via the app, copy their UUID, and uncomment above.
+

@@ -35,3 +35,4 @@ export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;
 export type SubmitColumnInput = z.infer<typeof submitColumnSchema>;
+

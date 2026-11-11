@@ -64,3 +64,4 @@ export function checkAnswers(
 
   return { rowsAnswered, correct, wrong, skipped };
 }
+

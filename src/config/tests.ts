@@ -49,3 +49,4 @@ export function getEstimatedDuration(config: TestConfig): string {
   const minutes = Math.ceil(totalSeconds / 60);
   return `~${minutes} menit`;
 }
+

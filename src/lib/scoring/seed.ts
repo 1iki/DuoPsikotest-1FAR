@@ -56,3 +56,4 @@ export function generateAllColumns(
 export function createSessionSeed(): number {
   return Math.floor(Math.random() * 2147483647) + 1;
 }
+

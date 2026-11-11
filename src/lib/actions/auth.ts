@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { registerSchema, loginSchema } from '@/lib/validators/schemas';
+import { checkRateLimit } from '@/lib/security/ratelimit';
 import { redirect } from 'next/navigation';
 
 export interface AuthResult {
@@ -17,7 +18,13 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
 
   const parsed = registerSchema.safeParse(raw);
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message };
+    return { error: parsed.error.issues[0]?.message || 'Input tidak valid' };
+  }
+
+  // Rate limit signup by email
+  const rl = checkRateLimit(`register:${parsed.data.email}`, 3, 60 * 1000);
+  if (!rl.success) {
+    return { error: 'Terlalu banyak percobaan pendaftaran. Coba lagi dalam 1 menit.' };
   }
 
   const supabase = await createClient();
@@ -47,7 +54,13 @@ export async function signIn(
 
   const parsed = loginSchema.safeParse(raw);
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message };
+    return { error: parsed.error.issues[0]?.message || 'Input tidak valid' };
+  }
+
+  // Rate limit login attempts: 5 per minute per email
+  const rl = checkRateLimit(`login:${parsed.data.email}`, 5, 60 * 1000);
+  if (!rl.success) {
+    return { error: 'Terlalu banyak percobaan masuk. Silakan tunggu 1 menit sebelum mencoba lagi.' };
   }
 
   const supabase = await createClient();

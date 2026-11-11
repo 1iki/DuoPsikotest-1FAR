@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { TEST_CONFIGS, getEstimatedDuration } from '@/config/tests';
 import { getLatestSessionStatus } from '@/lib/actions/session';
 
+export const dynamic = 'force-dynamic';
+
 function formatStatus(status: string | null): { text: string; color: string } {
   switch (status) {
     case 'completed':
@@ -70,3 +72,4 @@ export default function TestsPage() {
     </div>
   );
 }
+
