@@ -21,7 +21,6 @@ export default function Keypad({ onPress, disabled = false }: KeypadProps) {
   useEffect(() => {
     if (disabled) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if user is inside an input/textarea
       if (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement
@@ -39,7 +38,7 @@ export default function Keypad({ onPress, disabled = false }: KeypadProps) {
 
   return (
     <div
-      className="grid grid-cols-5 gap-2 p-2 select-none"
+      className="grid grid-cols-5 gap-1.5 sm:gap-2.5 w-full select-none"
       role="group"
       aria-label="Keypad angka"
     >
@@ -49,9 +48,8 @@ export default function Keypad({ onPress, disabled = false }: KeypadProps) {
           type="button"
           onClick={() => handlePress(digit)}
           disabled={disabled}
-          className="flex h-14 w-full select-none touch-manipulation items-center justify-center rounded-xl bg-gray-100 text-2xl font-bold tabular-nums shadow-sm transition-all active:scale-95 active:bg-blue-300 disabled:opacity-40 dark:bg-gray-800 dark:active:bg-blue-800 sm:h-16 sm:text-2xl"
+          className="flex h-14 sm:h-16 w-full select-none touch-manipulation items-center justify-center rounded-xl bg-gray-100/90 text-2xl font-bold tabular-nums text-gray-900 border border-gray-200/80 shadow-sm transition-all active:scale-95 active:bg-blue-600 active:text-white active:border-blue-600 disabled:opacity-30 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:active:bg-blue-600 dark:active:border-blue-500"
           aria-label={`Angka ${digit}`}
-          style={{ minWidth: 56, minHeight: 56 }}
         >
           {digit}
         </button>

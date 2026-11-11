@@ -169,12 +169,12 @@ export default function TestEngine({
 
   if (isFinished && !isPractice) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white p-6 dark:bg-gray-950">
         <div className="text-center">
-          <div className="mb-4 text-4xl">🎉</div>
-          <h2 className="text-xl font-bold">Tes Selesai!</h2>
+          <div className="mb-4 text-5xl">🎉</div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Tes Selesai!</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Mengalihkan ke halaman hasil...
+            Menghitung analisis & mengalihkan ke halaman hasil...
           </p>
         </div>
       </div>
@@ -183,12 +183,12 @@ export default function TestEngine({
 
   if (isLandscape) {
     return (
-      <div className="flex h-[60vh] items-center justify-center p-4 text-center">
-        <div>
-          <div className="mb-4 text-4xl">📱</div>
-          <h2 className="text-lg font-bold">Putar HP Anda</h2>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white p-6 text-center dark:bg-gray-950">
+        <div className="max-w-xs">
+          <div className="mb-4 text-5xl animate-bounce">📱</div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Putar Perangkat Anda</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Tes ini hanya bisa dikerjakan dalam posisi portrait (tegak).
+            Tes ini dirancang khusus dalam posisi portrait (tegak). Silakan putar HP Anda ke posisi vertikal untuk melanjutkan.
           </p>
         </div>
       </div>
@@ -198,56 +198,61 @@ export default function TestEngine({
   const currentDigits = columns[currentColumn] || [];
 
   return (
-    <div className="flex h-[calc(100vh-64px)] flex-col" style={{ maxWidth: 480, margin: '0 auto' }}>
-      {/* Header bar */}
-      <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2 dark:border-gray-800">
-        <Timer
-          key={timerKey}
-          duration={secondsPerColumn}
-          onTimeUp={handleTimeUp}
-          running={!isTransitioning && !isFinished}
-        />
-        <div className="text-center" aria-live="polite">
-          <span className="text-xs text-gray-500">Lajur</span>
-          <p className="font-mono text-sm font-bold tabular-nums">
-            {currentColumn + 1}/{totalColumns}
-          </p>
-        </div>
-        <div className="text-right">
-          <span className="text-xs text-gray-500">Dijawab</span>
-          <p className="font-mono text-sm font-bold tabular-nums">
-            {answers.filter((a) => a !== null && a !== undefined).length}
-          </p>
-        </div>
-      </div>
-
-      {/* Column transition overlay */}
-      {isTransitioning && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/90 dark:bg-gray-950/90">
-          <div className="text-center">
-            <p className="text-lg font-bold">
-              Lajur {currentColumn + 2}/{totalColumns}
+    <div className="fixed inset-0 z-40 flex flex-col bg-gray-50 dark:bg-gray-950 overflow-hidden select-none">
+      <div className="relative mx-auto flex h-full w-full max-w-[480px] flex-col justify-between overflow-hidden bg-white dark:bg-gray-900 border-x border-gray-200/60 dark:border-gray-800/60 shadow-2xl">
+        {/* Top Header bar */}
+        <div className="shrink-0 flex items-center justify-between border-b border-gray-200 bg-white/95 px-4 py-2.5 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-900/95 shadow-sm z-10">
+          <Timer
+            key={timerKey}
+            duration={secondsPerColumn}
+            onTimeUp={handleTimeUp}
+            running={!isTransitioning && !isFinished}
+          />
+          <div className="text-center" aria-live="polite">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 block">Lajur</span>
+            <p className="font-mono text-base font-bold tabular-nums text-gray-900 dark:text-gray-100">
+              {currentColumn + 1}<span className="text-xs text-gray-400 font-normal">/{totalColumns}</span>
             </p>
-            <p className="text-sm text-gray-500">Bersiap...</p>
+          </div>
+          <div className="text-right">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 block">Dijawab</span>
+            <p className="font-mono text-base font-bold tabular-nums text-blue-600 dark:text-blue-400">
+              {answers.filter((a) => a !== null && a !== undefined).length}
+            </p>
           </div>
         </div>
-      )}
 
-      {/* Number column display */}
-      <div className="flex-1 overflow-hidden px-4 py-2">
-        <NumberColumn
-          digits={currentDigits}
-          answers={answers}
-          currentPairIndex={currentPairIndex}
-        />
-      </div>
+        {/* Column transition overlay */}
+        {isTransitioning && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-white/95 backdrop-blur-sm dark:bg-gray-950/95">
+            <div className="text-center p-6 rounded-2xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-100 dark:border-gray-800">
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block mb-1">
+                Lajur Berikutnya
+              </span>
+              <p className="text-2xl font-black text-gray-900 dark:text-gray-100 font-mono">
+                Lajur {currentColumn + 2} / {totalColumns}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Bersiap menghitung...</p>
+            </div>
+          </div>
+        )}
 
-      {/* Keypad */}
-      <div className="border-t border-gray-200 bg-white pb-safe dark:border-gray-800 dark:bg-gray-950">
-        <Keypad
-          onPress={handleKeyPress}
-          disabled={isTransitioning || isFinished}
-        />
+        {/* Number column display (scrollable) */}
+        <div className="relative flex-1 min-h-0 overflow-hidden bg-gray-50/50 dark:bg-gray-950/50">
+          <NumberColumn
+            digits={currentDigits}
+            answers={answers}
+            currentPairIndex={currentPairIndex}
+          />
+        </div>
+
+        {/* Keypad — statically docked at the bottom of the user's screen */}
+        <div className="shrink-0 w-full border-t border-gray-200/90 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] px-2.5 pt-2.5 pb-[max(env(safe-area-inset-bottom),0.75rem)] z-20">
+          <Keypad
+            onPress={handleKeyPress}
+            disabled={isTransitioning || isFinished}
+          />
+        </div>
       </div>
     </div>
   );
